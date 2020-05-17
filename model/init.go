@@ -1,7 +1,7 @@
 package model
 
 import (
-	"singo/util"
+	"centralac/util"
 	"time"
 
 	"github.com/jinzhu/gorm"

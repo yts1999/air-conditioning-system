@@ -1,11 +1,11 @@
 package api
 
 import (
+	"centralac/conf"
+	"centralac/model"
+	"centralac/serializer"
 	"encoding/json"
 	"fmt"
-	"singo/conf"
-	"singo/model"
-	"singo/serializer"
 
 	"github.com/gin-gonic/gin"
 	validator "gopkg.in/go-playground/validator.v8"

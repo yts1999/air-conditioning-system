@@ -1,4 +1,4 @@
-module singo
+module centralac
 
 go 1.12
 

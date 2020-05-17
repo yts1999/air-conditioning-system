@@ -1,9 +1,9 @@
 package server
 
 import (
+	"centralac/api"
+	"centralac/middleware"
 	"os"
-	"singo/api"
-	"singo/middleware"
 
 	"github.com/gin-gonic/gin"
 )

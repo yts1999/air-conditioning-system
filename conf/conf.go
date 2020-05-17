@@ -1,10 +1,10 @@
 package conf
 
 import (
+	"centralac/cache"
+	"centralac/model"
+	"centralac/util"
 	"os"
-	"singo/cache"
-	"singo/model"
-	"singo/util"
 
 	"github.com/joho/godotenv"
 )

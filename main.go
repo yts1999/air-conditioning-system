@@ -1,8 +1,8 @@
 package main
 
 import (
-	"singo/conf"
-	"singo/server"
+	"centralac/conf"
+	"centralac/server"
 )
 
 func main() {
