@@ -4,8 +4,7 @@ Tag:
   max: "太长"
 Field:
   Name: "名称"
-  Nickname: "用户昵称"
-  UserName: "用户名"
+  RoomID: "房间号"
   Password: "密码"
   PasswordConfirm: "密码校验"
   
