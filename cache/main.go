@@ -8,7 +8,7 @@ import (
 	"github.com/go-redis/redis"
 )
 
-// RedisClient Redis缓存客户端单例
+// RedisClient Redis缓存房客端单例
 var RedisClient *redis.Client
 
 // Redis 在中间件中初始化redis链接

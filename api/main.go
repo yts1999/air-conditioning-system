@@ -2,7 +2,6 @@ package api
 
 import (
 	"centralac/conf"
-	"centralac/model"
 	"centralac/serializer"
 	"encoding/json"
 	"fmt"
@@ -17,16 +16,6 @@ func Ping(c *gin.Context) {
 		Code: 0,
 		Msg:  "Pong",
 	})
-}
-
-// CurrentUser 获取当前用户
-func CurrentUser(c *gin.Context) *model.User {
-	if user, _ := c.Get("user"); user != nil {
-		if u, ok := user.(*model.User); ok {
-			return u
-		}
-	}
-	return nil
 }
 
 // ErrorResponse 返回错误消息
