@@ -33,8 +33,8 @@ func NewRouter() *gin.Engine {
 			guestAuth.Use(middleware.CurrentGuest())
 			guestAuth.Use(middleware.GuestAuthRequired())
 
-			guestAuth.GET("me", api.GuestMe)
-			guestAuth.DELETE("logout", api.GuestLogout)
+			guestAuth.GET("guest/me", api.GuestMe)
+			guestAuth.DELETE("guest/logout", api.GuestLogout)
 		}
 
 		//需要管理员登录保护的
@@ -45,6 +45,9 @@ func NewRouter() *gin.Engine {
 
 			adminAuth.DELETE("admin/logout", api.AdminLogout)
 			adminAuth.POST("guest/register", api.GuestRegister)
+
+			adminAuth.POST("room/create", api.RoomCreate)
+			adminAuth.DELETE("room/delete", api.RoomDelete)
 		}
 	}
 	return r

@@ -9,8 +9,8 @@ type Admin struct {
 	CreatedAt int64  `json:"created_at"`
 }
 
-// BuildUser 序列化管理员
-func BuildUser(admin model.Admin) Admin {
+// BuildAdmin 序列化管理员
+func BuildAdmin(admin model.Admin) Admin {
 	return Admin{
 		ID:        admin.ID,
 		Username:  admin.Username,
@@ -18,9 +18,9 @@ func BuildUser(admin model.Admin) Admin {
 	}
 }
 
-// BuildUserResponse 序列化管理员响应
-func BuildUserResponse(admin model.Admin) Response {
+// BuildAdminResponse 序列化管理员响应
+func BuildAdminResponse(admin model.Admin) Response {
 	return Response{
-		Data: BuildUser(admin),
+		Data: BuildAdmin(admin),
 	}
 }

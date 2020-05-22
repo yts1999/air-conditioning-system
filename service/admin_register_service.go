@@ -50,7 +50,7 @@ func (service *AdminRegisterService) Register() serializer.Response {
 		return serializer.ParamErr("注册失败", err)
 	}
 
-	resp := serializer.BuildUserResponse(user)
+	resp := serializer.BuildAdminResponse(user)
 	resp.Msg = "注册成功"
 	return resp
 }

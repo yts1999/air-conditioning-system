@@ -37,7 +37,7 @@ func (service *AdminLoginService) Login(c *gin.Context) serializer.Response {
 	// 设置session
 	service.setSession(c, admin)
 
-	resp := serializer.BuildUserResponse(admin)
+	resp := serializer.BuildAdminResponse(admin)
 	resp.Msg = "登录成功"
 	return resp
 }

@@ -52,6 +52,13 @@ func (service *GuestRegisterService) valid() *serializer.Response {
 
 // Register 用户注册
 func (service *GuestRegisterService) Register() serializer.Response {
+	var room model.Room
+
+	//检查房间号是否已经存在
+	if model.DB.Where("room_id = ?", service.RoomID).First(&room).RecordNotFound() {
+		return serializer.ParamErr("房间号不存在", nil)
+	}
+
 	guest := model.Guest{
 		RoomID:   service.RoomID,
 		IDNumber: service.IDNumber,
