@@ -7,7 +7,7 @@ import (
 // Guest 房客模型
 type Guest struct {
 	gorm.Model
-	RoomID   string
+	RoomID   string `gorm:"unique"`
 	IDNumber string
 }
 

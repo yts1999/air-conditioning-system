@@ -44,7 +44,9 @@ func NewRouter() *gin.Engine {
 			adminAuth.Use(middleware.AdminAuthRequired())
 
 			adminAuth.DELETE("admin/logout", api.AdminLogout)
+
 			adminAuth.POST("guest/register", api.GuestRegister)
+			adminAuth.DELETE("guest/delete", api.GuestDelete)
 
 			adminAuth.POST("room/create", api.RoomCreate)
 			adminAuth.DELETE("room/delete", api.RoomDelete)

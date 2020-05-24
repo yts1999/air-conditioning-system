@@ -8,7 +8,7 @@ import (
 // Admin 管理员模型
 type Admin struct {
 	gorm.Model
-	Username       string
+	Username       string `gorm:"unique"`
 	PasswordDigest string
 }
 

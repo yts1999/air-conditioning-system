@@ -20,6 +20,17 @@ func GuestRegister(c *gin.Context) {
 	}
 }
 
+// GuestDelete 删除房客接口
+func GuestDelete(c *gin.Context) {
+	var service service.GuestDeleteService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.Delete()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+}
+
 // GuestLogin 房客登录接口
 func GuestLogin(c *gin.Context) {
 	var service service.GuestLoginService

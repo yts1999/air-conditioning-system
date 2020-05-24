@@ -27,7 +27,7 @@ func (service *AdminRegisterService) valid() *serializer.Response {
 
 // Register 管理员注册
 func (service *AdminRegisterService) Register() serializer.Response {
-	user := model.Admin{
+	admin := model.Admin{
 		Username: service.Username,
 	}
 
@@ -37,7 +37,7 @@ func (service *AdminRegisterService) Register() serializer.Response {
 	}
 
 	// 加密密码
-	if err := user.SetPassword(service.Password); err != nil {
+	if err := admin.SetPassword(service.Password); err != nil {
 		return serializer.Err(
 			serializer.CodeEncryptError,
 			"密码加密失败",
@@ -46,11 +46,11 @@ func (service *AdminRegisterService) Register() serializer.Response {
 	}
 
 	// 创建管理员
-	if err := model.DB.Create(&user).Error; err != nil {
+	if err := model.DB.Create(&admin).Error; err != nil {
 		return serializer.ParamErr("注册失败", err)
 	}
 
-	resp := serializer.BuildAdminResponse(user)
+	resp := serializer.BuildAdminResponse(admin)
 	resp.Msg = "注册成功"
 	return resp
 }

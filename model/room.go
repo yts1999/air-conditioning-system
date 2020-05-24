@@ -2,9 +2,20 @@ package model
 
 // Room 房间模型
 type Room struct {
-	RoomID     string `gorm:"primary_key"`
-	SwitchTime uint
+	RoomID      string `gorm:"primary_key"`
+	SwitchTime  uint
+	PowerOn     bool
+	CurrentTemp float32
+	TargetTemp  float32
+	WindSpeed   uint
 }
+
+// 风速
+const (
+	Low uint = iota
+	Medium
+	High
+)
 
 // GetRoom 用RoomID获取房间
 func GetRoom(RoomID interface{}) (Room, error) {
