@@ -50,6 +50,13 @@ func NewRouter() *gin.Engine {
 
 			adminAuth.POST("room/create", api.RoomCreate)
 			adminAuth.DELETE("room/delete", api.RoomDelete)
+			adminAuth.GET("room/show", api.RoomShow)
+			adminAuth.GET("room/list", api.RoomList)
+
+			adminAuth.GET("record/all", api.RecordOfRoomList)
+			adminAuth.GET("record/day", api.RecordOfRoomOfDayList)
+			adminAuth.GET("record/month", api.RecordOfRoomOfMonthList)
+			adminAuth.GET("record/year", api.RecordOfRoomOfYearList)
 		}
 	}
 	return r

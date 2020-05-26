@@ -27,3 +27,25 @@ func RoomDelete(c *gin.Context) {
 		c.JSON(200, ErrorResponse(err))
 	}
 }
+
+// RoomShow 获取房间信息接口
+func RoomShow(c *gin.Context) {
+	var service service.RoomShowService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.Show()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+}
+
+// RoomList 获取所有房间信息接口
+func RoomList(c *gin.Context) {
+	var service service.RoomListService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.List()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+}

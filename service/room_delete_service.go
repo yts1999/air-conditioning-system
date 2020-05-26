@@ -5,7 +5,7 @@ import (
 	"centralac/serializer"
 )
 
-// RoomDeleteService 管理房间的服务
+// RoomDeleteService 删除房间的服务
 type RoomDeleteService struct {
 	RoomID string `form:"room_id" json:"room_id" binding:"required,min=3,max=4"`
 }

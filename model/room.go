@@ -2,12 +2,13 @@ package model
 
 // Room 房间模型
 type Room struct {
-	RoomID      string `gorm:"primary_key"`
-	SwitchTime  uint
-	PowerOn     bool
-	CurrentTemp float32
-	TargetTemp  float32
-	WindSpeed   uint
+	RoomID        string `gorm:"primary_key"`
+	SwitchTime    uint
+	PowerOn       bool
+	CurrentTemp   float32
+	TargetTemp    float32
+	WindSpeed     uint
+	CurrentRecord uint
 }
 
 // 风速

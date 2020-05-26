@@ -5,7 +5,7 @@ import (
 	"centralac/serializer"
 )
 
-// RoomCreateService 管理房间的服务
+// RoomCreateService 创建房间的服务
 type RoomCreateService struct {
 	RoomID string `form:"room_id" json:"room_id" binding:"required,min=3,max=4"`
 }

@@ -30,3 +30,19 @@ func BuildRoomResponse(room model.Room) Response {
 		Data: BuildRoom(room),
 	}
 }
+
+// BuildRooms 序列化所有房间
+func BuildRooms(rs []model.Room) (rooms []Room) {
+	for _, r := range rs {
+		room := BuildRoom(r)
+		rooms = append(rooms, room)
+	}
+	return rooms
+}
+
+// BuildRoomsResponse 序列化所有房间响应
+func BuildRoomsResponse(rooms []model.Room) Response {
+	return Response{
+		Data: BuildRooms(rooms),
+	}
+}
