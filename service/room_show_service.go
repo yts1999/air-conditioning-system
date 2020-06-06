@@ -14,11 +14,7 @@ type RoomShowService struct {
 func (service *RoomShowService) Show() serializer.Response {
 	var room model.Room
 	if err := model.DB.First(&room, service.RoomID).Error; err != nil {
-		return serializer.Response{
-			Code:  404,
-			Msg:   "房间不存在",
-			Error: err.Error(),
-		}
+		return serializer.Err(404, "房间信息不存在", err)
 	}
 	resp := serializer.BuildRoomResponse(room)
 	resp.Msg = "获取房间信息成功"

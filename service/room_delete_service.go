@@ -26,7 +26,7 @@ func (service *RoomDeleteService) Delete() serializer.Response {
 
 	// 删除房间
 	if err := model.DB.Where("room_id = ?", service.RoomID).Delete(&room).Error; err != nil {
-		return serializer.ParamErr("房间删除失败", err)
+		return serializer.DBErr("房间删除失败", err)
 	}
 
 	resp := serializer.BuildRoomResponse(room)

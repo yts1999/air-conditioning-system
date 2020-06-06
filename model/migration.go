@@ -6,6 +6,7 @@ func migration() {
 	DB.AutoMigrate(&Admin{})
 	DB.AutoMigrate(&Room{})
 	DB.AutoMigrate(&Guest{})
+	DB.AutoMigrate(&Record{})
 	// 外键约束
 	DB.Model(&Guest{}).AddForeignKey("room_id", "rooms(room_id)", "RESTRICT", "RESTRICT")
 	DB.Model(&Record{}).AddForeignKey("room_id", "rooms(room_id)", "CASCADE", "CASCADE")

@@ -4,7 +4,7 @@ import "time"
 
 // Record 温控记录模型
 type Record struct {
-	ID        uint `gorm:"primary_key"`
+	ID        uint `gorm:"primary_key;auto_increment"`
 	RoomID    string
 	StartTime time.Time
 	EndTime   time.Time

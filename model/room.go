@@ -5,10 +5,12 @@ type Room struct {
 	RoomID        string `gorm:"primary_key"`
 	SwitchTime    uint
 	PowerOn       bool
+	WindSupply    bool
 	CurrentTemp   float32
 	TargetTemp    float32
 	WindSpeed     uint
 	CurrentRecord uint
+	Bill          float32
 }
 
 // 风速
