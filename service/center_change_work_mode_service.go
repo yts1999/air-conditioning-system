@@ -6,14 +6,14 @@ import (
 
 // CenterChangeWorkModeService 中央空调改变工作模式的服务
 type CenterChangeWorkModeService struct {
-	WorkMode uint `form:"work_mode" json:"work_mode" binding:"required,gte=0,lte=1"`
+	WorkMode uint `form:"work_mode" json:"work_mode" binding:"required,gte=1,lte=2"`
 }
 
 // Change 中央空调改变工作模式函数
 func (service *CenterChangeWorkModeService) Change() serializer.Response {
 	centerStatusLock.Lock()
 	centerPowerMode = service.WorkMode
-	if centerPowerMode == 0 {
+	if centerPowerMode == 1 {
 		defaultTemp = 22.0
 		lowestTemp = 18.0
 		highestTemp = 25.0
