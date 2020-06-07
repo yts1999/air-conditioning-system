@@ -17,7 +17,7 @@ func NewRouter() *gin.Engine {
 	r.Use(middleware.Cors())
 
 	// 路由
-	v1 := r.Group("/api/v1")
+	v1 := r.Group("/api/v2")
 	{
 		v1.POST("ping", api.Ping)
 

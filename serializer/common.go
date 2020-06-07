@@ -4,9 +4,9 @@ import "github.com/gin-gonic/gin"
 
 // Response 基础序列化器
 type Response struct {
-	Code  int         `json:"code"`
-	Data  interface{} `json:"data,omitempty"`
-	Msg   string      `json:"msg"`
+	Code  int         `json:"status"`
+	Data  interface{} `json:"result,omitempty"`
+	Msg   string      `json:"message"`
 	Error string      `json:"error,omitempty"`
 }
 
