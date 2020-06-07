@@ -23,9 +23,6 @@ func NewRouter() *gin.Engine {
 
 		// 房客登录
 		v1.POST("guest/login", api.GuestLogin)
-		// 从控机开关机
-		v1.POST("room/startup", api.RoomStartup)
-		v1.POST("room/shutdown", api.RoomShutdown)
 		// 管理员注册、登录
 		v1.POST("admin/register", api.AdminRegister)
 		v1.POST("admin/login", api.AdminLogin)

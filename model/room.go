@@ -10,6 +10,7 @@ type Room struct {
 	TargetTemp    float32
 	WindSpeed     uint
 	CurrentRecord uint
+	Energy        float32
 	Bill          float32
 }
 

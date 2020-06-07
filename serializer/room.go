@@ -11,6 +11,7 @@ type Room struct {
 	CurrentTemp float32 `json:"current_temp"`
 	TargetTemp  float32 `json:"target_temp"`
 	WindSpeed   uint    `json:"wind_speed"`
+	Energy      float32 `json:"energy"`
 	Bill        float32 `json:"bill"`
 }
 
@@ -24,6 +25,7 @@ func BuildRoom(room model.Room) Room {
 		CurrentTemp: room.CurrentTemp,
 		TargetTemp:  room.TargetTemp,
 		WindSpeed:   room.WindSpeed,
+		Energy:      room.Energy,
 		Bill:        room.Bill,
 	}
 }

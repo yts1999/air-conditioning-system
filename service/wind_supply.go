@@ -77,9 +77,11 @@ func stopWindSupply(room *model.Room) serializer.Response {
 		return serializer.DBErr("送风记录修改失败", err)
 	}
 	room.WindSupply = false
+	room.Energy += energy
 	room.Bill += energy * 5.0
 	roomNew := make(map[string]interface{})
 	roomNew["wind_supply"] = false
+	roomNew["energy"] = room.Energy
 	roomNew["bill"] = room.Bill
 	if err := model.DB.Model(&room).Updates(roomNew).Error; err != nil {
 		return serializer.DBErr("房间记录修改失败", err)

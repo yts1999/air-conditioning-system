@@ -44,6 +44,7 @@ func (service *GuestDeleteService) Delete() serializer.Response {
 	roomNew["target_temp"] = defaultTemp
 	centerStatusLock.RUnlock()
 	roomNew["wind_speed"] = model.Medium
+	roomNew["energy"] = 0
 	roomNew["bill"] = 0
 	if err := model.DB.Model(&room).Updates(roomNew).Error; err != nil {
 		return serializer.DBErr("房间消费清空失败", err)
