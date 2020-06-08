@@ -38,6 +38,7 @@ func (service *RoomWindStopService) Stop() serializer.Response {
 	if waitList.Len() != 0 {
 		roomID := waitList.Front().Value
 		waitList.Remove(waitList.Front())
+		delete(waitStatus, roomID.(string))
 		waitListLock.Unlock()
 		var windRoom model.Room
 		model.DB.Where("room_id = ?", roomID).First(&windRoom)

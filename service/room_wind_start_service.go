@@ -14,8 +14,9 @@ type RoomWindStartService struct {
 
 var windSupplyLock sync.RWMutex
 var windSupplySem uint = 3
-var waitListLock sync.Mutex
+var waitListLock sync.RWMutex
 var waitList = list.New()
+var waitStatus map[string]bool
 
 // Start 请求送风函数
 func (service *RoomWindStartService) Start() serializer.Response {
@@ -50,6 +51,7 @@ func (service *RoomWindStartService) Start() serializer.Response {
 
 	waitListLock.Lock()
 	waitList.PushBack(service.RoomID)
+	waitStatus[service.RoomID] = true
 	waitListLock.Unlock()
 	windSupplyLock.Unlock()
 	centerStatusLock.RUnlock()

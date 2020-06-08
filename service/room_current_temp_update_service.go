@@ -23,11 +23,13 @@ func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
 	if err := model.DB.Model(&room).Update("current_temp", service.CurrentTemp).Error; err != nil {
 		return serializer.DBErr("房间当前温度失败", err)
 	}
+	var StartTime time.Time
 	if room.WindSupply {
 		var record model.Record
 		if err := model.DB.First(&record, room.CurrentRecord).Error; err != nil {
 			return serializer.SystemErr("无法查询当前记录", err)
 		}
+		StartTime = record.StartTime
 		curTime := time.Now()
 		minDur := float32(curTime.Sub(record.StartTime).Minutes())
 		var energy float32
@@ -50,7 +52,11 @@ func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
 		room.Energy += energy
 		room.Bill += energy * 5.0
 	}
-	resp := serializer.BuildRoomResponse(room)
+	centerStatusLock.RLock()
+	waitListLock.RLock()
+	resp := serializer.BuildRoomStatusResponse(room, centerWorkMode, waitStatus[room.RoomID], StartTime)
+	waitListLock.RUnlock()
+	centerStatusLock.RUnlock()
 	resp.Msg = "房间当前温度更新成功"
 	return resp
 }

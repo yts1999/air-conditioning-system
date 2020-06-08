@@ -20,6 +20,7 @@ func (service *CenterShutdownService) Shutdown() serializer.Response {
 	windSupplySem = 3
 	waitListLock.Lock()
 	waitList.Init()
+	waitStatus = make(map[string]bool)
 	waitListLock.Unlock()
 	for i := 0; i < len(roomList); i++ {
 		if roomList[i] != "" {
