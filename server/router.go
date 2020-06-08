@@ -60,7 +60,7 @@ func NewRouter() *gin.Engine {
 			adminAuth.DELETE("guest/delete", api.GuestDelete)
 
 			adminAuth.POST("center/startup", api.CenterStartup)
-			adminAuth.DELETE("center/shutdown", api.CenterShutdown)
+			adminAuth.POST("center/shutdown", api.CenterShutdown)
 			adminAuth.POST("center/change", api.CenterChangeWorkMode)
 			adminAuth.GET("center/status", api.CenterStatus)
 
