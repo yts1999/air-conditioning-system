@@ -22,6 +22,7 @@ func NewRouter() *gin.Engine {
 		v1.POST("ping", api.Ping)
 
 		// 房客登录
+		v1.POST("login", api.Login)
 		v1.POST("guest/login", api.GuestLogin)
 		// 管理员注册、登录
 		v1.POST("admin/register", api.AdminRegister)
