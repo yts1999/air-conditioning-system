@@ -40,7 +40,7 @@ func AdminLogin(c *gin.Context) {
 
 // Login 登录接口
 func Login(c *gin.Context) {
-	req := &LoginReq{}
+	var req LoginReq
 	err := c.ShouldBind(req)
 	if err != nil {
 		c.JSON(200, ErrorResponse(err))
