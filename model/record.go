@@ -14,6 +14,40 @@ type Record struct {
 	Bill      float32
 }
 
+// GetRecord 获取房间温控记录
+func GetRecord() ([]Record, error) {
+	var records []Record
+	result := DB.Find(&records)
+	return records, result.Error
+}
+
+// GetDayRecord 获取指定日温控记录
+func GetDayRecord(Year interface{}, Month interface{}, Day interface{}) ([]Record, error) {
+	StartTime := time.Date(Year.(int), time.Month(Month.(int)), Day.(int), 0, 0, 0, 0, time.Local)
+	EndTime := time.Date(Year.(int), time.Month(Month.(int)), Day.(int), 0, 0, 0, 0, time.Local).AddDate(0, 0, 1).Add(-time.Nanosecond)
+	var records []Record
+	result := DB.Where("start_time <= ? AND end_time >= ?", EndTime, StartTime).Find(&records)
+	return records, result.Error
+}
+
+// GetMonthRecord 获取指定月温控记录
+func GetMonthRecord(Year interface{}, Month interface{}) ([]Record, error) {
+	StartTime := time.Date(Year.(int), time.Month(Month.(int)), 1, 0, 0, 0, 0, time.Local)
+	EndTime := time.Date(Year.(int), time.Month(Month.(int)), 1, 0, 0, 0, 0, time.Local).AddDate(0, 1, 0).Add(-time.Nanosecond)
+	var records []Record
+	result := DB.Where("start_time <= ? AND end_time >= ?", EndTime, StartTime).Find(&records)
+	return records, result.Error
+}
+
+// GetYearRecord 获取指定年温控记录
+func GetYearRecord(Year interface{}) ([]Record, error) {
+	StartTime := time.Date(Year.(int), 1, 1, 0, 0, 0, 0, time.Local)
+	EndTime := time.Date(Year.(int), 1, 1, 0, 0, 0, 0, time.Local).AddDate(1, 0, 0).Add(-time.Nanosecond)
+	var records []Record
+	result := DB.Where("start_time <= ? AND end_time >= ?", EndTime, StartTime).Find(&records)
+	return records, result.Error
+}
+
 // GetRecordOfRoom 用房间号获取房间温控记录
 func GetRecordOfRoom(RoomID interface{}) ([]Record, error) {
 	var records []Record

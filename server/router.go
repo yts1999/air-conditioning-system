@@ -69,7 +69,8 @@ func NewRouter() *gin.Engine {
 			adminAuth.POST("room/show", api.RoomShow)
 			adminAuth.GET("room/list", api.RoomList)
 
-			adminAuth.POST("record", api.RecordOfRoomList)
+			adminAuth.POST("record/all", api.RecordList)
+			adminAuth.POST("record/room", api.RecordOfRoomList)
 		}
 	}
 	return r
