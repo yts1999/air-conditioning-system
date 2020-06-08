@@ -7,8 +7,8 @@ import (
 
 // RoomTargetTempUpdateService 更改目标温度的服务
 type RoomTargetTempUpdateService struct {
-	RoomID     string `form:"room_id" json:"room_id" binding:"required,min=3,max=4"`
-	TargetTemp uint   `form:"target_temp" json:"target_temp"`
+	RoomID     string  `form:"room_id" json:"room_id" binding:"required,min=3,max=4"`
+	TargetTemp float32 `form:"target_temp" json:"target_temp"`
 }
 
 // Update 更改目标温度函数
@@ -18,6 +18,12 @@ func (service *RoomTargetTempUpdateService) Update() serializer.Response {
 	if model.DB.Where("room_id = ?", service.RoomID).First(&room).RecordNotFound() {
 		return serializer.ParamErr("房间号不存在", nil)
 	}
+	centerStatusLock.RLock()
+	if service.TargetTemp > highestTemp || service.TargetTemp < lowestTemp {
+		centerStatusLock.RUnlock()
+		return serializer.SystemErr("温度超出范围", nil)
+	}
+	centerStatusLock.RUnlock()
 	// 更改目标温度
 	err := model.DB.Model(model.Room{}).
 		Where("room_id = ?", service.RoomID).

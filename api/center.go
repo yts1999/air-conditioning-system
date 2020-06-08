@@ -39,6 +39,17 @@ func CenterChangeWorkMode(c *gin.Context) {
 	}
 }
 
+// CenterChangeDefaultTemp 中央空调改变默认温度接口
+func CenterChangeDefaultTemp(c *gin.Context) {
+	var service service.CenterChangeDefaultTempService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.Change()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+}
+
 // CenterStatus 获取中央空调状态接口
 func CenterStatus(c *gin.Context) {
 	var service service.CenterStatusService

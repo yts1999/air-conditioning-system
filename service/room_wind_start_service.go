@@ -34,6 +34,11 @@ func (service *RoomWindStartService) Start() serializer.Response {
 		return serializer.SystemErr("中央空调未开启", nil)
 	}
 
+	if (room.TargetTemp > room.CurrentTemp && centerWorkMode == 1) || (room.TargetTemp < room.CurrentTemp && centerWorkMode == 2) {
+		centerStatusLock.RUnlock()
+		return serializer.SystemErr("冷暖模式与中央空调不符", nil)
+	}
+
 	windSupplyLock.Lock()
 	if windSupplySem > 0 {
 		//开始送风
