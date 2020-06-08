@@ -16,7 +16,7 @@ type Room struct {
 
 // 风速
 const (
-	Low uint = iota
+	Low uint = iota + 1
 	Medium
 	High
 )
