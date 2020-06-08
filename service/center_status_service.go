@@ -11,7 +11,7 @@ type CenterStatusService struct {
 // Status 中央空调状态函数
 func (service *CenterStatusService) Status() serializer.Response {
 	centerStatusLock.RLock()
-	resp := serializer.BuildCenterResponse(centerPowerOn, centerPowerMode, defaultTemp, lowestTemp, highestTemp)
+	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
 	centerStatusLock.RUnlock()
 	resp.Msg = "获取中央空调状态成功"
 	return resp

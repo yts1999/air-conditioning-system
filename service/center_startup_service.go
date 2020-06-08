@@ -11,7 +11,8 @@ type CenterStartupService struct {
 
 var centerStatusLock sync.RWMutex
 var centerPowerOn bool = false
-var centerPowerMode uint = 1 // 1 -- 制冷 2 -- 制热
+var centerWorkMode uint = 1 // 1 -- 制冷 2 -- 制热
+var activeList []string
 var defaultTemp float32 = 22.0
 var lowestTemp float32 = 18.0
 var highestTemp float32 = 25.0
@@ -20,11 +21,12 @@ var highestTemp float32 = 25.0
 func (service *CenterStartupService) Startup() serializer.Response {
 	centerStatusLock.Lock()
 	centerPowerOn = true
-	centerPowerMode = 1
+	centerWorkMode = 1
+	activeList = activeList[0:0]
 	defaultTemp = 22.0
 	lowestTemp = 18.0
 	highestTemp = 25.0
-	resp := serializer.BuildCenterResponse(centerPowerOn, centerPowerMode, defaultTemp, lowestTemp, highestTemp)
+	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
 	centerStatusLock.Unlock()
 	resp.Msg = "中央空调开机成功"
 	return resp

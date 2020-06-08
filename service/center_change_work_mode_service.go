@@ -12,8 +12,8 @@ type CenterChangeWorkModeService struct {
 // Change 中央空调改变工作模式函数
 func (service *CenterChangeWorkModeService) Change() serializer.Response {
 	centerStatusLock.Lock()
-	centerPowerMode = service.WorkMode
-	if centerPowerMode == 1 {
+	centerWorkMode = service.WorkMode
+	if centerWorkMode == 1 {
 		defaultTemp = 22.0
 		lowestTemp = 18.0
 		highestTemp = 25.0
@@ -22,7 +22,7 @@ func (service *CenterChangeWorkModeService) Change() serializer.Response {
 		lowestTemp = 25.0
 		highestTemp = 30.0
 	}
-	resp := serializer.BuildCenterResponse(centerPowerOn, centerPowerMode, defaultTemp, lowestTemp, highestTemp)
+	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
 	centerStatusLock.Unlock()
 	resp.Msg = "中央空调改变工作模式成功"
 	return resp

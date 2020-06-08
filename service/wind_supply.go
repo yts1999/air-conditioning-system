@@ -3,24 +3,15 @@ package service
 import (
 	"centralac/model"
 	"centralac/serializer"
-	"sync"
 	"time"
 )
 
-var runningListLock sync.Mutex
-var runningList = [3]string{"", "", ""}
-
 // windSupply 送风函数
 func windSupply(room *model.Room) serializer.Response {
-	runningListLock.Lock()
-	for i := 0; i < 3; i++ {
-		if runningList[i] != "" {
-			runningList[i] = room.RoomID
-			break
-		}
-	}
+	centerStatusLock.Lock()
+	activeList = append(activeList, room.RoomID)
+	centerStatusLock.Unlock()
 	curTime := time.Now()
-	runningListLock.Unlock()
 	record := model.Record{
 		RoomID:    room.RoomID,
 		StartTime: curTime,
@@ -49,14 +40,14 @@ func windSupply(room *model.Room) serializer.Response {
 
 // stopWindSupply 停止送风
 func stopWindSupply(room *model.Room) serializer.Response {
-	runningListLock.Lock()
-	for i := 0; i < 3; i++ {
-		if runningList[i] == room.RoomID {
-			runningList[i] = ""
+	centerStatusLock.Lock()
+	for i := 0; i < len(activeList); i++ {
+		if activeList[i] == room.RoomID {
+			activeList = append(activeList[:i], activeList[:i+1]...)
 			break
 		}
 	}
-	runningListLock.Unlock()
+	centerStatusLock.Unlock()
 	var record model.Record
 	if err := model.DB.Where("id = ?", room.CurrentRecord).First(&record).Error; err != nil {
 		return serializer.DBErr("送风记录查找失败", err)

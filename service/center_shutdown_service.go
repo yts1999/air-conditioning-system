@@ -13,17 +13,15 @@ type CenterShutdownService struct {
 func (service *CenterShutdownService) Shutdown() serializer.Response {
 	centerStatusLock.Lock()
 	centerPowerOn = false
-	resp := serializer.BuildCenterResponse(centerPowerOn, centerPowerMode, defaultTemp, lowestTemp, highestTemp)
+	roomList := activeList
+	activeList = activeList[0:0]
+	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
 	windSupplyLock.Lock()
 	windSupplySem = 3
 	waitListLock.Lock()
 	waitList.Init()
 	waitListLock.Unlock()
-	runningListLock.Lock()
-	roomList := runningList
-	runningList = [3]string{"", "", ""}
-	runningListLock.Unlock()
-	for i := 0; i < 3; i++ {
+	for i := 0; i < len(roomList); i++ {
 		if roomList[i] != "" {
 			var room model.Room
 			model.DB.Where("room_id = ?", roomList[i]).First(&room)

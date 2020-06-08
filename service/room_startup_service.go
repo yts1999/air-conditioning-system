@@ -35,7 +35,7 @@ func (service *RoomStartupService) Startup() serializer.Response {
 	}
 
 	centerStatusLock.RLock()
-	resp := serializer.BuildCenterResponse(centerPowerOn, centerPowerMode, defaultTemp, lowestTemp, highestTemp)
+	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
 	centerStatusLock.RUnlock()
 	resp.Msg = "从控机开机成功"
 	return resp
