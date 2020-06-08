@@ -20,9 +20,10 @@ func AdminRegister(c *gin.Context) {
 	}
 }
 
+// LoginReq 登录请求
 type LoginReq struct {
-	Username string ` json:"username" binding:"required"`
-	Password string ` json:"password" binding:"required"`
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 	Role     string `json:"role" binding:"required"`
 }
 
@@ -37,6 +38,7 @@ func AdminLogin(c *gin.Context) {
 	}
 }
 
+// Login 登录接口
 func Login(c *gin.Context) {
 	req := &LoginReq{}
 	err := c.ShouldBind(req)
