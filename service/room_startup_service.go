@@ -3,6 +3,7 @@ package service
 import (
 	"centralac/model"
 	"centralac/serializer"
+	"time"
 )
 
 // RoomStartupService 从控机开机的服务
@@ -18,11 +19,18 @@ func (service *RoomStartupService) Startup() serializer.Response {
 	}
 
 	roomNew := make(map[string]interface{})
-	roomNew["switch_time"] = room.SwitchTime + 1
 	roomNew["power_on"] = true
 	roomNew["target_temp"] = defaultTemp
 	roomNew["wind_speed"] = model.Medium
 	if err := model.DB.Model(&room).Updates(roomNew).Error; err != nil {
+		return serializer.DBErr("从控机开机失败", err)
+	}
+
+	switchRecord := model.Switch{
+		RoomID: room.RoomID,
+		Time:   time.Now(),
+	}
+	if err := model.DB.Create(&switchRecord).Error; err != nil {
 		return serializer.DBErr("从控机开机失败", err)
 	}
 

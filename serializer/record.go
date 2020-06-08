@@ -14,6 +14,11 @@ type Record struct {
 	Bill      float32 `json:"bill"`
 }
 
+//Records 多条温控记录序列化器
+type Records struct {
+	Record []Record `json:"record"`
+}
+
 // BuildRecord 序列化温控记录
 func BuildRecord(record model.Record) Record {
 	return Record{
@@ -36,12 +41,15 @@ func BuildRecordResponse(record model.Record) Response {
 }
 
 // BuildRecords 序列化多条温控记录
-func BuildRecords(rs []model.Record) (records []Record) {
+func BuildRecords(rs []model.Record) Records {
+	var records []Record
 	for _, r := range rs {
 		record := BuildRecord(r)
 		records = append(records, record)
 	}
-	return records
+	return Records{
+		Record: records,
+	}
 }
 
 // BuildRecordsResponse 序列化多条温控记录响应

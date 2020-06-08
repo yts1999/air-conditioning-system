@@ -3,7 +3,6 @@ package model
 // Room 房间模型
 type Room struct {
 	RoomID        string `gorm:"primary_key"`
-	SwitchTime    uint
 	PowerOn       bool
 	WindSupply    bool
 	CurrentTemp   float32
