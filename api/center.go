@@ -38,3 +38,14 @@ func CenterChangeWorkMode(c *gin.Context) {
 		c.JSON(200, ErrorResponse(err))
 	}
 }
+
+// CenterStatus 获取中央空调状态接口
+func CenterStatus(c *gin.Context) {
+	var service service.CenterStatusService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.Status()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+}

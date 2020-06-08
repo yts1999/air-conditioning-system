@@ -7,11 +7,11 @@ import (
 
 // RecordOfRoomService 获取房间记录的服务
 type RecordOfRoomService struct {
-	Type   string `form:"type"`
+	Type   string `form:"type" json:"type" binding:"required"`
 	RoomID string `form:"room_id" json:"room_id" binding:"required,min=3,max=4"`
 	Year   uint   `form:"year" json:"year"`
-	Month  uint   `form:"month" json:"month" binding:"gte=1,lte=12"`
-	Day    uint   `form:"day" json:"day" binding:"gte=1,lte=31"`
+	Month  uint   `form:"month" json:"month"`
+	Day    uint   `form:"day" json:"day"`
 }
 
 // List 获取房间记录函数
