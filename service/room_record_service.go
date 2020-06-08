@@ -30,6 +30,8 @@ func (service *RoomRecordService) List() serializer.Response {
 		records, totalEnergy, totalBill, err = model.GetRecordOfRoom(service.RoomID)
 	case "day":
 		records, totalEnergy, totalBill, err = model.GetDayRecordOfRoom(service.RoomID, service.Year, service.Month, service.Day)
+	case "week":
+		records, totalEnergy, totalBill, err = model.GetWeekRecordOfRoom(service.RoomID, service.Year, service.Month, service.Day)
 	case "month":
 		records, totalEnergy, totalBill, err = model.GetMonthRecordOfRoom(service.RoomID, service.Year, service.Month)
 	case "year":
@@ -45,6 +47,8 @@ func (service *RoomRecordService) List() serializer.Response {
 		switchTime, err = model.GetSwitchTimeOfRoom(service.RoomID)
 	case "day":
 		switchTime, err = model.GetDaySwitchTimeOfRoom(service.RoomID, service.Year, service.Month, service.Day)
+	case "week":
+		switchTime, err = model.GetWeekSwitchTimeOfRoom(service.RoomID, service.Year, service.Month, service.Day)
 	case "month":
 		switchTime, err = model.GetMonthSwitchTimeOfRoom(service.RoomID, service.Year, service.Month)
 	case "year":

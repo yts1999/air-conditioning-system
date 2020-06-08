@@ -22,6 +22,8 @@ func (service *RecordService) List() serializer.Response {
 		records, err = model.GetRecord()
 	case "day":
 		records, err = model.GetDayRecord(service.Year, service.Month, service.Day)
+	case "week":
+		records, err = model.GetWeekRecord(service.Year, service.Month, service.Day)
 	case "month":
 		records, err = model.GetMonthRecord(service.Year, service.Month)
 	case "year":

@@ -25,6 +25,15 @@ func GetDaySwitchTimeOfRoom(RoomID string, Year int, Month int, Day int) (int, e
 	return len(switches), result.Error
 }
 
+// GetWeekSwitchTimeOfRoom 用房间号获取房间指定周开关机次数
+func GetWeekSwitchTimeOfRoom(RoomID string, Year int, Month int, Day int) (int, error) {
+	StartTime := time.Date(Year, time.Month(Month), Day, 0, 0, 0, 0, time.Local).AddDate(0, 0, -7)
+	EndTime := time.Date(Year, time.Month(Month), Day, 0, 0, 0, 0, time.Local).AddDate(0, 0, 1).Add(-time.Nanosecond)
+	var switches []Switch
+	result := DB.Where("room_id = ? AND time <= ? AND time >= ?", RoomID, EndTime, StartTime).Find(&switches)
+	return len(switches), result.Error
+}
+
 // GetMonthSwitchTimeOfRoom 用房间号获取房间指定月开关机次数
 func GetMonthSwitchTimeOfRoom(RoomID string, Year int, Month int) (int, error) {
 	StartTime := time.Date(Year, time.Month(Month), 1, 0, 0, 0, 0, time.Local)
