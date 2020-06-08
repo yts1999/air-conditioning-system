@@ -38,7 +38,7 @@ func NewRouter() *gin.Engine {
 			guestAuth.DELETE("guest/logout", api.GuestLogout)
 
 			guestAuth.POST("room/startup", api.RoomStartup)
-			guestAuth.DELETE("room/shutdown", api.RoomShutdown)
+			guestAuth.POST("room/shutdown", api.RoomShutdown)
 
 			guestAuth.POST("room/updateCurrentTemp", api.RoomCurrentTempUpdate)
 			guestAuth.POST("room/updateTargetTemp", api.RoomTargetTempUpdate)
