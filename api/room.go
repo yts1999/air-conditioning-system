@@ -126,3 +126,14 @@ func RoomWindStop(c *gin.Context) {
 		c.JSON(200, ErrorResponse(err))
 	}
 }
+
+// RoomRecord 获取房间记录接口
+func RoomRecord(c *gin.Context) {
+	var service service.RoomRecordService
+	if err := c.ShouldBind(&service); err == nil {
+		res := service.List()
+		c.JSON(200, res)
+	} else {
+		c.JSON(200, ErrorResponse(err))
+	}
+}

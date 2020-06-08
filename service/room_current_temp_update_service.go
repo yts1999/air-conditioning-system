@@ -28,7 +28,8 @@ func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
 		if err := model.DB.First(&record, room.CurrentRecord).Error; err != nil {
 			return serializer.SystemErr("无法查询当前记录", err)
 		}
-		minDur := float32(time.Now().Sub(record.StartTime).Minutes())
+		curTime := time.Now()
+		minDur := float32(curTime.Sub(record.StartTime).Minutes())
 		var energy float32
 		switch room.WindSpeed {
 		case model.High:
@@ -37,6 +38,14 @@ func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
 			energy = minDur
 		case model.Low:
 			energy = minDur * 0.8
+		}
+		recordNew := make(map[string]interface{})
+		recordNew["end_time"] = curTime
+		recordNew["end_temp"] = service.CurrentTemp
+		recordNew["energy"] = energy
+		recordNew["bill"] = energy * 5.0
+		if err := model.DB.Model(&record).Updates(recordNew).Error; err != nil {
+			return serializer.DBErr("无法更新当前记录", err)
 		}
 		room.Energy += energy
 		room.Bill += energy * 5.0

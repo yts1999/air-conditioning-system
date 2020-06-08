@@ -5,7 +5,6 @@ import "centralac/model"
 // Room 房间序列化器
 type Room struct {
 	RoomID      string  `json:"room_id"`
-	SwitchTime  uint    `json:"switch_time"`
 	PowerOn     bool    `json:"power_on"`
 	WindSupply  bool    `json:"wind_supply"`
 	CurrentTemp float32 `json:"current_temp"`
@@ -19,7 +18,6 @@ type Room struct {
 func BuildRoom(room model.Room) Room {
 	return Room{
 		RoomID:      room.RoomID,
-		SwitchTime:  room.SwitchTime,
 		PowerOn:     room.PowerOn,
 		WindSupply:  room.WindSupply,
 		CurrentTemp: room.CurrentTemp,

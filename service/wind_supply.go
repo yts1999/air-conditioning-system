@@ -19,11 +19,15 @@ func windSupply(room *model.Room) serializer.Response {
 			break
 		}
 	}
+	curTime := time.Now()
 	runningListLock.Unlock()
 	record := model.Record{
 		RoomID:    room.RoomID,
-		StartTime: time.Now(),
+		StartTime: curTime,
+		EndTime:   curTime,
 		StartTemp: room.CurrentTemp,
+		EndTemp:   room.CurrentTemp,
+		WindSpeed: room.WindSpeed,
 	}
 	if err := model.DB.Create(&record).Error; err != nil {
 		return serializer.DBErr("开始送风失败", err)

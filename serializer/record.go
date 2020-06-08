@@ -10,6 +10,7 @@ type Record struct {
 	EndTime   int64   `json:"end_time"`
 	StartTemp float32 `json:"start_temp"`
 	EndTemp   float32 `json:"end_temp"`
+	WindSpeed uint    `json:"wind_speed"`
 	Energy    float32 `json:"energy"`
 	Bill      float32 `json:"bill"`
 }
@@ -28,6 +29,7 @@ func BuildRecord(record model.Record) Record {
 		EndTime:   record.EndTime.Unix(),
 		StartTemp: record.StartTemp,
 		EndTemp:   record.EndTemp,
+		WindSpeed: record.WindSpeed,
 		Energy:    record.Energy,
 		Bill:      record.Bill,
 	}
@@ -40,15 +42,20 @@ func BuildRecordResponse(record model.Record) Response {
 	}
 }
 
-// BuildRecords 序列化多条温控记录
-func BuildRecords(rs []model.Record) Records {
+// BuildRecordList 序列化温控记录列表
+func BuildRecordList(rs []model.Record) []Record {
 	var records []Record
 	for _, r := range rs {
 		record := BuildRecord(r)
 		records = append(records, record)
 	}
+	return records
+}
+
+//BuildRecords 序列化多条温控记录
+func BuildRecords(records []model.Record) Records {
 	return Records{
-		Record: records,
+		Record: BuildRecordList(records),
 	}
 }
 

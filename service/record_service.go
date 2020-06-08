@@ -8,9 +8,9 @@ import (
 // RecordService 获取记录的服务
 type RecordService struct {
 	Type  string `form:"type" json:"type" binding:"required"`
-	Year  uint   `form:"year" json:"year"`
-	Month uint   `form:"month" json:"month"`
-	Day   uint   `form:"day" json:"day"`
+	Year  int    `form:"year" json:"year"`
+	Month int    `form:"month" json:"month"`
+	Day   int    `form:"day" json:"day"`
 }
 
 // List 获取房间记录函数
