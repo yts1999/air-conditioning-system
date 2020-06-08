@@ -3,6 +3,7 @@ package api
 import (
 	"centralac/serializer"
 	"centralac/service"
+	"errors"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
@@ -19,6 +20,12 @@ func AdminRegister(c *gin.Context) {
 	}
 }
 
+type LoginReq struct {
+	Username string ` json:"username" binding:"required"`
+	Password string ` json:"password" binding:"required"`
+	Role     string `json:"role" binding:"required"`
+}
+
 // AdminLogin 管理员登录接口
 func AdminLogin(c *gin.Context) {
 	var service service.AdminLoginService
@@ -28,6 +35,35 @@ func AdminLogin(c *gin.Context) {
 	} else {
 		c.JSON(200, ErrorResponse(err))
 	}
+}
+
+func Login(c *gin.Context) {
+	req := &LoginReq{}
+	err := c.ShouldBind(req)
+	if err != nil {
+		c.JSON(200, ErrorResponse(err))
+		return
+	}
+	if req.Role == "room" {
+		service := service.GuestLoginService{
+			RoomID:   req.Username,
+			IDNumber: req.Password,
+		}
+		res := service.Login(c)
+		c.JSON(200, res)
+		return
+	} else if req.Role == "admin" {
+		service := service.AdminLoginService{
+			Username: req.Username,
+			Password: req.Password,
+		}
+		res := service.Login(c)
+		c.JSON(200, res)
+		return
+	}
+	c.JSON(200, ErrorResponse(errors.New("wrong role")))
+	return
+
 }
 
 // AdminLogout 管理员登出
