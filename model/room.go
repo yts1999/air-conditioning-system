@@ -9,7 +9,7 @@ type Room struct {
 	CurrentTemp   float32
 	TargetTemp    float32
 	WindSpeed     uint
-	CurrentRecord uint
+	CurrentRecord uint `sql:"default:null"`
 	Energy        float32
 	Bill          float32
 }
