@@ -13,7 +13,6 @@ type CenterShutdownService struct {
 // Shutdown 中央空调关机函数
 func (service *CenterShutdownService) Shutdown() serializer.Response {
 	centerStatusLock.Lock()
-	fmt.Printf("starting shutdown\n")
 	centerPowerOn = false
 	fmt.Printf("%d", len(activeList))
 	roomList := activeList
@@ -21,11 +20,8 @@ func (service *CenterShutdownService) Shutdown() serializer.Response {
 	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
 	windSupplyLock.Lock()
 	windSupplySem = 3
-	waitListLock.Lock()
-	fmt.Printf("wait list\n")
 	waitList.Init()
 	waitStatus = make(map[string]bool)
-	waitListLock.Unlock()
 	for i := 0; i < len(roomList); i++ {
 		if roomList[i] != "" {
 			fmt.Printf("%s", roomList[i])

@@ -27,6 +27,12 @@ func (service *RoomWindStopService) Stop() serializer.Response {
 		return serializer.SystemErr("中央空调未开启", nil)
 	}
 
+	for i := 0; i < len(activeList); i++ {
+		if activeList[i] == room.RoomID {
+			activeList = append(activeList[:i], activeList[i+1:]...)
+			break
+		}
+	}
 	resp := stopWindSupply(&room)
 	if resp.Code != 0 {
 		centerStatusLock.Unlock()
@@ -34,22 +40,20 @@ func (service *RoomWindStopService) Stop() serializer.Response {
 	}
 
 	windSupplyLock.Lock()
-	waitListLock.Lock()
 	if waitList.Len() != 0 {
 		roomID := waitList.Front().Value
 		waitList.Remove(waitList.Front())
 		delete(waitStatus, roomID.(string))
-		waitListLock.Unlock()
 		var windRoom model.Room
 		model.DB.Where("room_id = ?", roomID).First(&windRoom)
 		windSupplyLock.Unlock()
+		activeList = append(activeList, windRoom.RoomID)
 		resp := windSupply(&windRoom)
 		if resp.Code != 0 {
 			centerStatusLock.Unlock()
 			return resp
 		}
 	} else {
-		waitListLock.Unlock()
 		windSupplySem++
 		windSupplyLock.Unlock()
 	}

@@ -20,6 +20,12 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 	//停止送风
 	if room.WindSupply {
 		centerStatusLock.Lock()
+		for i := 0; i < len(activeList); i++ {
+			if activeList[i] == room.RoomID {
+				activeList = append(activeList[:i], activeList[i+1:]...)
+				break
+			}
+		}
 		resp := stopWindSupply(&room)
 		if resp.Code != 0 {
 			centerStatusLock.Unlock()
@@ -27,29 +33,27 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 		}
 		if centerPowerOn {
 			windSupplyLock.Lock()
-			waitListLock.Lock()
 			if waitList.Len() != 0 {
 				roomID := waitList.Front().Value
 				waitList.Remove(waitList.Front())
 				delete(waitStatus, roomID.(string))
-				waitListLock.Unlock()
 				var windRoom model.Room
 				model.DB.Where("room_id = ?", roomID).First(&windRoom)
 				windSupplyLock.Unlock()
+				activeList = append(activeList, windRoom.RoomID)
 				resp := windSupply(&windRoom)
 				if resp.Code != 0 {
 					centerStatusLock.Unlock()
 					return resp
 				}
 			} else {
-				waitListLock.Unlock()
 				windSupplySem++
 				windSupplyLock.Unlock()
 			}
 		}
 		centerStatusLock.Unlock()
 	} else {
-		waitListLock.Lock()
+		windSupplyLock.Lock()
 		for i := waitList.Front(); i != nil; i = i.Next() {
 			if i.Value == room.RoomID {
 				waitList.Remove(i)
@@ -57,7 +61,7 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 				break
 			}
 		}
-		waitListLock.Unlock()
+		windSupplyLock.Unlock()
 	}
 
 	// 从控机关机

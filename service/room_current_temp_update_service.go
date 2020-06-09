@@ -54,9 +54,9 @@ func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
 		room.Bill += energy * 5.0
 	}
 	centerStatusLock.RLock()
-	waitListLock.RLock()
+	windSupplyLock.RLock()
 	resp := serializer.BuildRoomStatusResponse(room, centerWorkMode, waitStatus[room.RoomID], StartTime)
-	waitListLock.RUnlock()
+	windSupplyLock.RUnlock()
 	centerStatusLock.RUnlock()
 	resp.Msg = "房间当前温度更新成功"
 	return resp

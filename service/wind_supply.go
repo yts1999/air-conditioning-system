@@ -8,7 +8,6 @@ import (
 
 // windSupply 送风函数
 func windSupply(room *model.Room) serializer.Response {
-	activeList = append(activeList, room.RoomID)
 	curTime := time.Now()
 	record := model.Record{
 		RoomID:    room.RoomID,
@@ -38,12 +37,6 @@ func windSupply(room *model.Room) serializer.Response {
 
 // stopWindSupply 停止送风
 func stopWindSupply(room *model.Room) serializer.Response {
-	for i := 0; i < len(activeList); i++ {
-		if activeList[i] == room.RoomID {
-			activeList = append(activeList[:i], activeList[:i+1]...)
-			break
-		}
-	}
 	var record model.Record
 	if err := model.DB.Where("id = ?", room.CurrentRecord).First(&record).Error; err != nil {
 		return serializer.DBErr("送风记录查找失败", err)
@@ -80,4 +73,29 @@ func stopWindSupply(room *model.Room) serializer.Response {
 	resp := serializer.BuildRoomResponse(*room)
 	resp.Msg = "停止送风成功"
 	return resp
+}
+
+// WindSupplySchedule 送风调度函数
+func WindSupplySchedule() {
+	ticker := time.NewTicker(10 * time.Second)
+	for ; true; <-ticker.C {
+		centerStatusLock.Lock()
+		windSupplyLock.Lock()
+		if waitList.Len() != 0 {
+			var room model.Room
+			model.DB.Where("room_id = ?", activeList[0]).First(&room)
+			activeList = activeList[1:]
+			stopWindSupply(&room)
+			waitStatus[room.RoomID] = true
+			waitList.PushBack(room.RoomID)
+			roomID := waitList.Front().Value
+			waitList.Remove(waitList.Front())
+			delete(waitStatus, roomID.(string))
+			model.DB.Where("room_id = ?", roomID).First(&room)
+			activeList = append(activeList, room.RoomID)
+			windSupply(&room)
+		}
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
+	}
 }

@@ -12,7 +12,7 @@ type CenterStartupService struct {
 var centerStatusLock sync.RWMutex
 var centerPowerOn bool = false
 var centerWorkMode uint = 1 // 1 -- 制冷 2 -- 制热
-var activeList []string
+var activeList = []string{}
 var defaultTemp float32 = 22.0
 var lowestTemp float32 = 18.0
 var highestTemp float32 = 25.0

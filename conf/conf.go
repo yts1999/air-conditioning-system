@@ -3,6 +3,7 @@ package conf
 import (
 	"centralac/cache"
 	"centralac/model"
+	"centralac/service"
 	"centralac/util"
 	"os"
 
@@ -25,4 +26,7 @@ func Init() {
 	// 连接数据库
 	model.Database(os.Getenv("MYSQL_DSN"))
 	cache.Redis()
+
+	// 启动调度
+	go service.WindSupplySchedule()
 }
