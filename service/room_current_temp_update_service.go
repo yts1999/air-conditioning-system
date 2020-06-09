@@ -23,6 +23,7 @@ func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
 	if err := model.DB.Model(&room).Update("current_temp", service.CurrentTemp).Error; err != nil {
 		return serializer.DBErr("房间当前温度失败", err)
 	}
+	room.CurrentTemp = service.CurrentTemp
 	var StartTime time.Time
 	if room.WindSupply {
 		var record model.Record

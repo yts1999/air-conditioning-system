@@ -25,12 +25,10 @@ func (service *RoomTargetTempUpdateService) Update() serializer.Response {
 	}
 	centerStatusLock.RUnlock()
 	// 更改目标温度
-	err := model.DB.Model(model.Room{}).
-		Where("room_id = ?", service.RoomID).
-		Update("target_temp", service.TargetTemp).Error
-	if err != nil {
+	if err := model.DB.Model(&room).Update("target_temp", service.TargetTemp).Error; err != nil {
 		return serializer.DBErr("目标温度更改失败", err)
 	}
+	room.TargetTemp = service.TargetTemp
 	resp := serializer.BuildRoomResponse(room)
 	resp.Msg = "目标温度更改成功"
 	return resp
