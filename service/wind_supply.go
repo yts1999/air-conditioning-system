@@ -8,9 +8,7 @@ import (
 
 // windSupply 送风函数
 func windSupply(room *model.Room) serializer.Response {
-	centerStatusLock.Lock()
 	activeList = append(activeList, room.RoomID)
-	centerStatusLock.Unlock()
 	curTime := time.Now()
 	record := model.Record{
 		RoomID:    room.RoomID,
@@ -40,14 +38,12 @@ func windSupply(room *model.Room) serializer.Response {
 
 // stopWindSupply 停止送风
 func stopWindSupply(room *model.Room) serializer.Response {
-	centerStatusLock.Lock()
 	for i := 0; i < len(activeList); i++ {
 		if activeList[i] == room.RoomID {
 			activeList = append(activeList[:i], activeList[:i+1]...)
 			break
 		}
 	}
-	centerStatusLock.Unlock()
 	var record model.Record
 	if err := model.DB.Where("id = ?", room.CurrentRecord).First(&record).Error; err != nil {
 		return serializer.DBErr("送风记录查找失败", err)

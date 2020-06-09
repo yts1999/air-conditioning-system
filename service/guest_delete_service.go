@@ -20,7 +20,9 @@ func (service *GuestDeleteService) Delete() serializer.Response {
 
 	//停止送风
 	if room.WindSupply {
+		centerStatusLock.Lock()
 		resp := stopWindSupply(&room)
+		centerStatusLock.Unlock()
 		if resp.Code != 0 {
 			return resp
 		}

@@ -29,14 +29,14 @@ func (service *RoomWindStartService) Start() serializer.Response {
 		return serializer.SystemErr("当前已在送风", nil)
 	}
 
-	centerStatusLock.RLock()
+	centerStatusLock.Lock()
 	if !centerPowerOn {
-		centerStatusLock.RUnlock()
+		centerStatusLock.Unlock()
 		return serializer.SystemErr("中央空调未开启", nil)
 	}
 
 	if (room.TargetTemp > room.CurrentTemp && centerWorkMode == 1) || (room.TargetTemp < room.CurrentTemp && centerWorkMode == 2) {
-		centerStatusLock.RUnlock()
+		centerStatusLock.Unlock()
 		return serializer.SystemErr("冷暖模式与中央空调不符", nil)
 	}
 
@@ -45,7 +45,7 @@ func (service *RoomWindStartService) Start() serializer.Response {
 		//开始送风
 		windSupplySem--
 		windSupplyLock.Unlock()
-		centerStatusLock.RUnlock()
+		centerStatusLock.Unlock()
 		return windSupply(&room)
 	}
 
@@ -54,7 +54,7 @@ func (service *RoomWindStartService) Start() serializer.Response {
 	waitStatus[service.RoomID] = true
 	waitListLock.Unlock()
 	windSupplyLock.Unlock()
-	centerStatusLock.RUnlock()
+	centerStatusLock.Unlock()
 	resp := serializer.BuildRoomResponse(room)
 	resp.Msg = "送风阻塞"
 	return resp

@@ -21,15 +21,15 @@ func (service *RoomWindStopService) Stop() serializer.Response {
 		return serializer.SystemErr("当前未在送风", nil)
 	}
 
-	centerStatusLock.RLock()
+	centerStatusLock.Lock()
 	if !centerPowerOn {
-		centerStatusLock.RUnlock()
+		centerStatusLock.Unlock()
 		return serializer.SystemErr("中央空调未开启", nil)
 	}
 
 	resp := stopWindSupply(&room)
 	if resp.Code != 0 {
-		centerStatusLock.RUnlock()
+		centerStatusLock.Unlock()
 		return resp
 	}
 
@@ -45,7 +45,7 @@ func (service *RoomWindStopService) Stop() serializer.Response {
 		windSupplyLock.Unlock()
 		resp := windSupply(&windRoom)
 		if resp.Code != 0 {
-			centerStatusLock.RUnlock()
+			centerStatusLock.Unlock()
 			return resp
 		}
 	} else {
@@ -53,6 +53,6 @@ func (service *RoomWindStopService) Stop() serializer.Response {
 		windSupplySem++
 		windSupplyLock.Unlock()
 	}
-	centerStatusLock.RUnlock()
+	centerStatusLock.Unlock()
 	return resp
 }

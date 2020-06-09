@@ -17,6 +17,49 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 		return serializer.Err(404, "房间信息不存在", err)
 	}
 
+	//停止送风
+	if room.WindSupply {
+		centerStatusLock.Lock()
+		resp := stopWindSupply(&room)
+		if resp.Code != 0 {
+			centerStatusLock.Unlock()
+			return resp
+		}
+		if centerPowerOn {
+			windSupplyLock.Lock()
+			waitListLock.Lock()
+			if waitList.Len() != 0 {
+				roomID := waitList.Front().Value
+				waitList.Remove(waitList.Front())
+				delete(waitStatus, roomID.(string))
+				waitListLock.Unlock()
+				var windRoom model.Room
+				model.DB.Where("room_id = ?", roomID).First(&windRoom)
+				windSupplyLock.Unlock()
+				resp := windSupply(&windRoom)
+				if resp.Code != 0 {
+					centerStatusLock.Unlock()
+					return resp
+				}
+			} else {
+				waitListLock.Unlock()
+				windSupplySem++
+				windSupplyLock.Unlock()
+			}
+		}
+		centerStatusLock.Unlock()
+	} else {
+		waitListLock.Lock()
+		for i := waitList.Front(); i != nil; i = i.Next() {
+			if i.Value == room.RoomID {
+				waitList.Remove(i)
+				delete(waitStatus, room.RoomID)
+				break
+			}
+		}
+		waitListLock.Unlock()
+	}
+
 	// 从控机关机
 	err := model.DB.Model(model.Room{}).
 		Where("room_id = ?", service.RoomID).

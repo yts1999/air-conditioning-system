@@ -21,7 +21,9 @@ func (service *RoomWindSpeedUpdateService) Update() serializer.Response {
 
 	// 当前正在送风，则结束本次送风请求，重新开始送风
 	if room.WindSupply {
+		centerStatusLock.Lock()
 		resp := stopWindSupply(&room)
+		centerStatusLock.Unlock()
 		if resp.Code != 0 {
 			return resp
 		}
@@ -32,7 +34,9 @@ func (service *RoomWindSpeedUpdateService) Update() serializer.Response {
 		}
 		room.WindSpeed = service.WindSpeed
 
+		centerStatusLock.Lock()
 		resp = windSupply(&room)
+		centerStatusLock.Unlock()
 		if resp.Code != 0 {
 			return resp
 		}
