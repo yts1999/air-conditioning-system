@@ -20,6 +20,7 @@ var highestTemp float32 = 25.0
 // Startup 中央空调开机函数
 func (service *CenterStartupService) Startup() serializer.Response {
 	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	centerPowerOn = true
 	centerWorkMode = 1
 	activeList = activeList[0:0]
@@ -27,6 +28,7 @@ func (service *CenterStartupService) Startup() serializer.Response {
 	lowestTemp = 18.0
 	highestTemp = 25.0
 	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
+	windSupplyLock.Unlock()
 	centerStatusLock.Unlock()
 	resp.Msg = "中央空调开机成功"
 	return resp

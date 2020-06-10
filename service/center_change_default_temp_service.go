@@ -17,7 +17,9 @@ func (service *CenterChangeDefaultTempService) Change() serializer.Response {
 		return serializer.SystemErr("温度超出范围", nil)
 	}
 	defaultTemp = service.Temp
+	windSupplyLock.RLock()
 	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
+	windSupplyLock.RUnlock()
 	centerStatusLock.Unlock()
 	resp.Msg = "中央空调修改默认温度成功"
 	return resp

@@ -22,7 +22,9 @@ func (service *CenterChangeWorkModeService) Change() serializer.Response {
 		lowestTemp = 25.0
 		highestTemp = 30.0
 	}
+	windSupplyLock.RLock()
 	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
+	windSupplyLock.RUnlock()
 	centerStatusLock.Unlock()
 	resp.Msg = "中央空调改变工作模式成功"
 	return resp
