@@ -23,6 +23,10 @@ func (service *RoomWindStartService) Start() serializer.Response {
 		return serializer.ParamErr("房间号不存在", nil)
 	}
 
+	if !room.PowerOn {
+		return serializer.SystemErr("从控机未开启", nil)
+	}
+
 	if room.WindSupply {
 		return serializer.SystemErr("当前已在送风", nil)
 	}
