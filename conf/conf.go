@@ -32,5 +32,7 @@ func Init() {
 	cache.Redis()
 
 	// 启动调度
-	go service.WindSupplySchedule()
+	if os.Getenv("AC_SCHEDULE") == "RR" {
+		go service.WindSupplySchedule()
+	}
 }
