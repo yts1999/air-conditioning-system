@@ -3,7 +3,6 @@ package service
 import (
 	"centralac/model"
 	"centralac/serializer"
-	"fmt"
 	"time"
 )
 
@@ -90,14 +89,11 @@ func WindSupplySchedule() {
 			waitStatus[room.RoomID] = true
 			waitList.PushBack(room.RoomID)
 			roomID := waitList.Front().Value
-			fmt.Print("scheduler schedule")
-			fmt.Print(roomID)
 			waitList.Remove(waitList.Front())
 			delete(waitStatus, roomID.(string))
 			room = model.Room{}
 			model.DB.Where("room_id = ?", roomID).First(&room)
 			activeList = append(activeList, room.RoomID)
-			fmt.Print(room.RoomID)
 			windSupply(&room)
 		}
 		windSupplyLock.Unlock()
