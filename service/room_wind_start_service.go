@@ -43,8 +43,8 @@ func (service *RoomWindStartService) Start() serializer.Response {
 	if windSupplySem > 0 {
 		//开始送风
 		windSupplySem--
-		windSupplyLock.Unlock()
 		activeList = append(activeList, room.RoomID)
+		windSupplyLock.Unlock()
 		centerStatusLock.Unlock()
 		return windSupply(&room)
 	}
