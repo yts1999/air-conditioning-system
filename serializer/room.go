@@ -36,7 +36,8 @@ func BuildRoomResponse(room model.Room) Response {
 }
 
 // BuildRooms 序列化所有房间
-func BuildRooms(rs []model.Room) (rooms []Room) {
+func BuildRooms(rs []model.Room) []Room {
+	rooms := []Room{}
 	for _, r := range rs {
 		room := BuildRoom(r)
 		rooms = append(rooms, room)

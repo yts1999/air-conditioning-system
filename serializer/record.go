@@ -44,7 +44,7 @@ func BuildRecordResponse(record model.Record) Response {
 
 // BuildRecordList 序列化温控记录列表
 func BuildRecordList(rs []model.Record) []Record {
-	var records []Record
+	records := []Record{}
 	for _, r := range rs {
 		record := BuildRecord(r)
 		records = append(records, record)
