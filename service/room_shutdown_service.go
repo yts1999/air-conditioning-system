@@ -3,7 +3,6 @@ package service
 import (
 	"centralac/model"
 	"centralac/serializer"
-	"fmt"
 )
 
 // RoomShutdownService 从控机关机的服务
@@ -19,9 +18,9 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 	}
 
 	//停止送风
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	if room.WindSupply {
-		centerStatusLock.Lock()
-		windSupplyLock.Lock()
 		for i := 0; i < len(activeList); i++ {
 			if activeList[i] == room.RoomID {
 				activeList = append(activeList[:i], activeList[i+1:]...)
@@ -49,22 +48,17 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 				}
 			}
 		}
-		windSupplyLock.Unlock()
-		centerStatusLock.Unlock()
 	} else {
-		windSupplyLock.Lock()
-		fmt.Print("shutdown waitlist")
 		for i := waitList.Front(); i != nil; i = i.Next() {
 			if i.Value == room.RoomID {
-				fmt.Print(room.RoomID)
 				waitList.Remove(i)
 				delete(waitStatus, room.RoomID)
-				fmt.Print(waitStatus[room.RoomID])
 				break
 			}
 		}
-		windSupplyLock.Unlock()
 	}
+	windSupplyLock.Unlock()
+	centerStatusLock.Unlock()
 
 	// 从控机关机
 	if err := model.DB.Model(&room).Update("power_on", false).Error; err != nil {
