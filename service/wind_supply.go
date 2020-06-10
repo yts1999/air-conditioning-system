@@ -94,6 +94,7 @@ func WindSupplySchedule() {
 			fmt.Print(roomID)
 			waitList.Remove(waitList.Front())
 			delete(waitStatus, roomID.(string))
+			room = model.Room{}
 			model.DB.Where("room_id = ?", roomID).First(&room)
 			activeList = append(activeList, room.RoomID)
 			fmt.Print(room.RoomID)
