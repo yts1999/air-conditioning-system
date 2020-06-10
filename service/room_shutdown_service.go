@@ -3,6 +3,7 @@ package service
 import (
 	"centralac/model"
 	"centralac/serializer"
+	"fmt"
 )
 
 // RoomShutdownService 从控机关机的服务
@@ -52,8 +53,10 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 		centerStatusLock.Unlock()
 	} else {
 		windSupplyLock.Lock()
+		fmt.Print("shutdown waitlist")
 		for i := waitList.Front(); i != nil; i = i.Next() {
 			if i.Value == room.RoomID {
+				fmt.Print(room.RoomID)
 				waitList.Remove(i)
 				delete(waitStatus, room.RoomID)
 				break
