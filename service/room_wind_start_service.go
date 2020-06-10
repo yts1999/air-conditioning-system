@@ -4,7 +4,6 @@ import (
 	"centralac/model"
 	"centralac/serializer"
 	"container/list"
-	"fmt"
 	"sync"
 )
 
@@ -15,7 +14,7 @@ type RoomWindStartService struct {
 
 var windSupplyLock sync.RWMutex
 var waitList = list.New()
-var waitStatus map[string]bool
+var waitStatus = make(map[string]bool)
 
 // Start 请求送风函数
 func (service *RoomWindStartService) Start() serializer.Response {
@@ -47,9 +46,7 @@ func (service *RoomWindStartService) Start() serializer.Response {
 		centerStatusLock.Unlock()
 		return windSupply(&room)
 	}
-	fmt.Printf("123\n")
 	if !waitStatus[room.RoomID] {
-		fmt.Printf("111\n")
 		waitList.PushBack(room.RoomID)
 		waitStatus[room.RoomID] = true
 	}
