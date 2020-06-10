@@ -4,6 +4,7 @@ import (
 	"centralac/model"
 	"centralac/serializer"
 	"container/list"
+	"fmt"
 	"sync"
 )
 
@@ -46,9 +47,11 @@ func (service *RoomWindStartService) Start() serializer.Response {
 		centerStatusLock.Unlock()
 		return windSupply(&room)
 	}
-	if !waitStatus[service.RoomID] {
-		waitList.PushBack(service.RoomID)
-		waitStatus[service.RoomID] = true
+	fmt.Printf("123\n")
+	if !waitStatus[room.RoomID] {
+		fmt.Printf("111\n")
+		waitList.PushBack(room.RoomID)
+		waitStatus[room.RoomID] = true
 	}
 	windSupplyLock.Unlock()
 	centerStatusLock.Unlock()
