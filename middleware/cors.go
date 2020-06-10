@@ -1,7 +1,6 @@
 package middleware
 
 import (
-	"fmt"
 	"regexp"
 
 	"github.com/gin-contrib/cors"
@@ -15,11 +14,10 @@ func Cors() gin.HandlerFunc {
 	config.AllowHeaders = []string{"Origin", "Content-Length", "Content-Type", "Cookie"}
 	if gin.Mode() == gin.ReleaseMode {
 		// 生产环境需要配置跨域域名，否则403
-		config.AllowOrigins = []string{"http://127.0.0.1:3000"}
+		config.AllowOrigins = []string{"http://yts1999.top:2000", "http://www.yts1999.top:2000", "http://39.106.48.217:2000"}
 	} else {
 		// 测试环境下模糊匹配本地开头的请求
 		config.AllowOriginFunc = func(origin string) bool {
-			fmt.Print(origin)
 			if regexp.MustCompile(`^http://127\.0\.0\.1:\d+$`).MatchString(origin) {
 				return true
 			}
