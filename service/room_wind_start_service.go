@@ -48,9 +48,10 @@ func (service *RoomWindStartService) Start() serializer.Response {
 		centerStatusLock.Unlock()
 		return windSupply(&room)
 	}
-
-	waitList.PushBack(service.RoomID)
-	waitStatus[service.RoomID] = true
+	if !waitStatus[service.RoomID] {
+		waitList.PushBack(service.RoomID)
+		waitStatus[service.RoomID] = true
+	}
 	windSupplyLock.Unlock()
 	centerStatusLock.Unlock()
 	resp := serializer.BuildRoomResponse(room)
