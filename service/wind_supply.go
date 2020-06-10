@@ -3,6 +3,7 @@ package service
 import (
 	"centralac/model"
 	"centralac/serializer"
+	"fmt"
 	"time"
 )
 
@@ -77,6 +78,7 @@ func stopWindSupply(room *model.Room) serializer.Response {
 
 // WindSupplySchedule 送风调度函数
 func WindSupplySchedule() {
+	fmt.Print("scheduler start")
 	ticker := time.NewTicker(10 * time.Second)
 	for ; true; <-ticker.C {
 		centerStatusLock.Lock()
@@ -89,6 +91,7 @@ func WindSupplySchedule() {
 			waitStatus[room.RoomID] = true
 			waitList.PushBack(room.RoomID)
 			roomID := waitList.Front().Value
+			fmt.Print(roomID)
 			waitList.Remove(waitList.Front())
 			delete(waitStatus, roomID.(string))
 			model.DB.Where("room_id = ?", roomID).First(&room)
