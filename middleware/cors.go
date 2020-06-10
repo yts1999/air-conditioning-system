@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"regexp"
 
 	"github.com/gin-contrib/cors"
@@ -18,6 +19,7 @@ func Cors() gin.HandlerFunc {
 	} else {
 		// 测试环境下模糊匹配本地开头的请求
 		config.AllowOriginFunc = func(origin string) bool {
+			fmt.Print(origin)
 			if regexp.MustCompile(`^http://127\.0\.0\.1:\d+$`).MatchString(origin) {
 				return true
 			}
