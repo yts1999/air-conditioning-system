@@ -59,6 +59,7 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 				fmt.Print(room.RoomID)
 				waitList.Remove(i)
 				delete(waitStatus, room.RoomID)
+				fmt.Print(waitStatus[room.RoomID])
 				break
 			}
 		}
