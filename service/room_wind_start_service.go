@@ -13,7 +13,6 @@ type RoomWindStartService struct {
 }
 
 var windSupplyLock sync.RWMutex
-var windSupplySem uint = 3
 var waitList = list.New()
 var waitStatus map[string]bool
 
@@ -40,9 +39,8 @@ func (service *RoomWindStartService) Start() serializer.Response {
 	}
 
 	windSupplyLock.Lock()
-	if windSupplySem > 0 {
+	if len(activeList) < 3 {
 		//开始送风
-		windSupplySem--
 		activeList = append(activeList, room.RoomID)
 		windSupplyLock.Unlock()
 		centerStatusLock.Unlock()

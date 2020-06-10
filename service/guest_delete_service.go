@@ -47,8 +47,6 @@ func (service *GuestDeleteService) Delete() serializer.Response {
 					centerStatusLock.Unlock()
 					return resp
 				}
-			} else {
-				windSupplySem++
 			}
 		}
 		windSupplyLock.Unlock()

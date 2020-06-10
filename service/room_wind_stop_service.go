@@ -65,8 +65,6 @@ func (service *RoomWindStopService) Stop() serializer.Response {
 			centerStatusLock.Unlock()
 			return resp
 		}
-	} else {
-		windSupplySem++
 	}
 	windSupplyLock.Unlock()
 	centerStatusLock.Unlock()

@@ -19,7 +19,6 @@ func (service *CenterShutdownService) Shutdown() serializer.Response {
 	roomList := activeList
 	activeList = activeList[0:0]
 	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
-	windSupplySem = 3
 	waitList.Init()
 	waitStatus = make(map[string]bool)
 	for i := 0; i < len(roomList); i++ {

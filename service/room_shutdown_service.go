@@ -46,8 +46,6 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 					centerStatusLock.Unlock()
 					return resp
 				}
-			} else {
-				windSupplySem++
 			}
 		}
 		windSupplyLock.Unlock()
@@ -65,12 +63,10 @@ func (service *RoomShutdownService) Shutdown() serializer.Response {
 	}
 
 	// 从控机关机
-	err := model.DB.Model(model.Room{}).
-		Where("room_id = ?", service.RoomID).
-		Update("power_on", false).Error
-	if err != nil {
+	if err := model.DB.Model(&room).Update("power_on", false).Error; err != nil {
 		return serializer.DBErr("从控机关机失败", err)
 	}
+	room.PowerOn = false
 
 	resp := serializer.BuildRoomResponse(room)
 	resp.Msg = "从控机关机成功"
