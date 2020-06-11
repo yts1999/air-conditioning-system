@@ -21,7 +21,8 @@ func (service *RoomListService) List() serializer.Response {
 		if rooms[i].WindSupply {
 			var record model.Record
 			if err := model.DB.First(&record, rooms[i].CurrentRecord).Error; err != nil {
-				centerStatusLock.Unlock()
+				windSupplyLock.RUnlock()
+				centerStatusLock.RUnlock()
 				return serializer.SystemErr("无法查询当前记录", err)
 			}
 			rooms[i].Energy += record.Energy
