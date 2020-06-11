@@ -3,7 +3,6 @@ package service
 import (
 	"centralac/model"
 	"centralac/serializer"
-	"fmt"
 )
 
 // CenterShutdownService 中央空调关机的服务
@@ -15,15 +14,12 @@ func (service *CenterShutdownService) Shutdown() serializer.Response {
 	centerStatusLock.Lock()
 	windSupplyLock.Lock()
 	centerPowerOn = false
-	fmt.Printf("shutdown\n")
-	fmt.Printf("%d\n", len(activeList))
 	roomList := activeList
 	activeList = activeList[0:0]
 	resp := serializer.BuildCenterResponse(centerPowerOn, centerWorkMode, activeList, defaultTemp, lowestTemp, highestTemp)
 	waitList.Init()
 	waitStatus = make(map[string]bool)
 	for i := 0; i < len(roomList); i++ {
-		fmt.Printf("%s\n", roomList[i])
 		var room model.Room
 		model.DB.Where("room_id = ?", roomList[i]).First(&room)
 		stopWindSupply(&room)
