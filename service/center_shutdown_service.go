@@ -22,17 +22,10 @@ func (service *CenterShutdownService) Shutdown() serializer.Response {
 	waitList.Init()
 	waitStatus = make(map[string]bool)
 	for i := 0; i < len(roomList); i++ {
-		if roomList[i] != "" {
-			fmt.Printf("%s", roomList[i])
-			var room model.Room
-			model.DB.Where("room_id = ?", roomList[i]).First(&room)
-			resp := stopWindSupply(&room)
-			if resp.Code != 0 {
-				windSupplyLock.Unlock()
-				centerStatusLock.Unlock()
-				return resp
-			}
-		}
+		fmt.Printf("%s", roomList[i])
+		var room model.Room
+		model.DB.Where("room_id = ?", roomList[i]).First(&room)
+		stopWindSupply(&room)
 	}
 	windSupplyLock.Unlock()
 	centerStatusLock.Unlock()
