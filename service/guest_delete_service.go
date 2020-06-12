@@ -30,6 +30,7 @@ func (service *GuestDeleteService) Delete() serializer.Response {
 		}
 		resp := stopWindSupply(&room)
 		if resp.Code != 0 {
+			windSupplyLock.Unlock()
 			centerStatusLock.Unlock()
 			return resp
 		}
