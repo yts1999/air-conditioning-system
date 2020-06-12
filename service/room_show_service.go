@@ -17,9 +17,13 @@ func (service *RoomShowService) Show() serializer.Response {
 	if err := model.DB.First(&room, service.RoomID).Error; err != nil {
 		return serializer.ParamErr("房间信息不存在", err)
 	}
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	if room.WindSupply {
 		var record model.Record
 		if err := model.DB.First(&record, room.CurrentRecord).Error; err != nil {
+			windSupplyLock.Unlock()
+			centerStatusLock.Unlock()
 			return serializer.SystemErr("无法查询当前记录", err)
 		}
 		minDur := float32(time.Now().Sub(record.StartTime).Minutes())
@@ -35,6 +39,8 @@ func (service *RoomShowService) Show() serializer.Response {
 		room.Energy += energy
 		room.Bill += energy * 5.0
 	}
+	windSupplyLock.Unlock()
+	centerStatusLock.Unlock()
 	resp := serializer.BuildRoomResponse(room)
 	resp.Msg = "获取房间信息成功"
 	return resp

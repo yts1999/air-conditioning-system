@@ -47,7 +47,7 @@ func (service *RoomWindStopService) Stop() serializer.Response {
 	}
 	resp := stopWindSupply(&room)
 	if resp.Code != 0 {
-		windSupplyLock.Lock()
+		windSupplyLock.Unlock()
 		centerStatusLock.Unlock()
 		return resp
 	}

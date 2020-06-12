@@ -23,32 +23,40 @@ func (service *RoomWindStartService) Start() serializer.Response {
 		return serializer.ParamErr("房间号不存在", nil)
 	}
 
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
+
 	if !room.PowerOn {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
 		return serializer.SystemErr("从控机未开启", nil)
 	}
 
 	if room.WindSupply {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
 		return serializer.SystemErr("当前已在送风", nil)
 	}
 
-	centerStatusLock.Lock()
 	if !centerPowerOn {
+		windSupplyLock.Unlock()
 		centerStatusLock.Unlock()
 		return serializer.SystemErr("中央空调未开启", nil)
 	}
 
 	if (room.TargetTemp > room.CurrentTemp && centerWorkMode == 1) || (room.TargetTemp < room.CurrentTemp && centerWorkMode == 2) {
+		windSupplyLock.Unlock()
 		centerStatusLock.Unlock()
 		return serializer.SystemErr("冷暖模式与中央空调不符", nil)
 	}
 
-	windSupplyLock.Lock()
 	if len(activeList) < 3 {
 		//开始送风
 		activeList = append(activeList, room.RoomID)
+		resp := windSupply(&room)
 		windSupplyLock.Unlock()
 		centerStatusLock.Unlock()
-		return windSupply(&room)
+		return resp
 	}
 	if !waitStatus[room.RoomID] {
 		waitList.PushBack(room.RoomID)

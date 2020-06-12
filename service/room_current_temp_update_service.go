@@ -40,11 +40,11 @@ func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
 			}
 		}
 	}
-	windSupplyLock.Unlock()
 	var StartTime time.Time
 	if room.WindSupply {
 		var record model.Record
 		if err := model.DB.First(&record, room.CurrentRecord).Error; err != nil {
+			windSupplyLock.Unlock()
 			centerStatusLock.Unlock()
 			return serializer.SystemErr("无法查询当前记录", err)
 		}
@@ -66,15 +66,15 @@ func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
 		recordNew["energy"] = energy
 		recordNew["bill"] = energy * 5.0
 		if err := model.DB.Model(&record).Updates(recordNew).Error; err != nil {
+			windSupplyLock.Unlock()
 			centerStatusLock.Unlock()
 			return serializer.DBErr("无法更新当前记录", err)
 		}
 		room.Energy += energy
 		room.Bill += energy * 5.0
 	}
-	windSupplyLock.RLock()
 	resp := serializer.BuildRoomStatusResponse(room, centerWorkMode, waitStatus[room.RoomID], StartTime)
-	windSupplyLock.RUnlock()
+	windSupplyLock.Unlock()
 	centerStatusLock.Unlock()
 	resp.Msg = "房间当前温度更新成功"
 	return resp

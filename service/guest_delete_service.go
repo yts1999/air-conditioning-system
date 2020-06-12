@@ -18,10 +18,10 @@ func (service *GuestDeleteService) Delete() serializer.Response {
 		return serializer.ParamErr("房间不存在", nil)
 	}
 
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	//停止送风
 	if room.WindSupply {
-		centerStatusLock.Lock()
-		windSupplyLock.Lock()
 		for i := 0; i < len(activeList); i++ {
 			if activeList[i] == room.RoomID {
 				activeList = append(activeList[:i], activeList[i+1:]...)
@@ -49,10 +49,7 @@ func (service *GuestDeleteService) Delete() serializer.Response {
 				}
 			}
 		}
-		windSupplyLock.Unlock()
-		centerStatusLock.Unlock()
 	} else {
-		windSupplyLock.Lock()
 		for i := waitList.Front(); i != nil; i = i.Next() {
 			if i.Value == room.RoomID {
 				waitList.Remove(i)
@@ -60,8 +57,9 @@ func (service *GuestDeleteService) Delete() serializer.Response {
 				break
 			}
 		}
-		windSupplyLock.Unlock()
 	}
+	windSupplyLock.Unlock()
+	centerStatusLock.Unlock()
 
 	//检查房客是否存在
 	var guest model.Guest

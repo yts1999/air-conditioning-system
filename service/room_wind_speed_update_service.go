@@ -19,30 +19,42 @@ func (service *RoomWindSpeedUpdateService) Update() serializer.Response {
 		return serializer.ParamErr("房间号不存在", nil)
 	}
 
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	// 当前正在送风，则结束本次送风请求，重新开始送风
 	if room.WindSupply {
 		resp := stopWindSupply(&room)
 		if resp.Code != 0 {
+			windSupplyLock.Unlock()
+			centerStatusLock.Unlock()
 			return resp
 		}
 
 		// 更改风速
 		if err := model.DB.Model(&room).Update("wind_speed", service.WindSpeed).Error; err != nil {
+			windSupplyLock.Unlock()
+			centerStatusLock.Unlock()
 			return serializer.DBErr("风速更改失败", err)
 		}
 		room.WindSpeed = service.WindSpeed
 
 		resp = windSupply(&room)
 		if resp.Code != 0 {
+			windSupplyLock.Unlock()
+			centerStatusLock.Unlock()
 			return resp
 		}
 	} else {
 		// 更改风速
 		if err := model.DB.Model(&room).Update("wind_speed", service.WindSpeed).Error; err != nil {
+			windSupplyLock.Unlock()
+			centerStatusLock.Unlock()
 			return serializer.DBErr("风速更改失败", err)
 		}
 		room.WindSpeed = service.WindSpeed
 	}
+	windSupplyLock.Unlock()
+	centerStatusLock.Unlock()
 
 	resp := serializer.BuildRoomResponse(room)
 	resp.Msg = "风速更改成功"
