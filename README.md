@@ -16,14 +16,6 @@ SESSION_SECRET="setOnProducation" # Seesion密钥，必须设置而且不要泄�
 GIN_MODE="debug"
 ```
 
-## Go Mod
-
-```shell
-go mod init go-crud
-export GOPROXY=http://mirrors.aliyun.com/goproxy/
-go run main.go // 自动安装
-```
-
 ## 运行
 
 ```shell
