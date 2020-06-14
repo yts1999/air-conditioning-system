@@ -12,14 +12,16 @@ type RoomShutdownService struct {
 
 // Shutdown 从控机关机函数
 func (service *RoomShutdownService) Shutdown() serializer.Response {
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	var room model.Room
 	if err := model.DB.First(&room, service.RoomID).Error; err != nil {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
 		return serializer.Err(404, "房间信息不存在", err)
 	}
 
 	//停止送风
-	centerStatusLock.Lock()
-	windSupplyLock.Lock()
 	if room.WindSupply {
 		for i := 0; i < len(activeList); i++ {
 			if activeList[i] == room.RoomID {

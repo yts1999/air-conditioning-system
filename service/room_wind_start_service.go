@@ -18,13 +18,14 @@ var waitStatus = make(map[string]bool)
 
 // Start 请求送风函数
 func (service *RoomWindStartService) Start() serializer.Response {
-	var room model.Room
-	if model.DB.Where("room_id = ?", service.RoomID).First(&room).RecordNotFound() {
-		return serializer.ParamErr("房间号不存在", nil)
-	}
-
 	centerStatusLock.Lock()
 	windSupplyLock.Lock()
+	var room model.Room
+	if model.DB.Where("room_id = ?", service.RoomID).First(&room).RecordNotFound() {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
+		return serializer.ParamErr("房间号不存在", nil)
+	}
 
 	if !room.PowerOn {
 		windSupplyLock.Unlock()

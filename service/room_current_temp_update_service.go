@@ -14,18 +14,23 @@ type RoomCurrentTempUpdateService struct {
 
 // Update 更新房间当前温度函数
 func (service *RoomCurrentTempUpdateService) Update() serializer.Response {
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	//检查房间号是否已经存在
 	var room model.Room
 	if model.DB.Where("room_id = ?", service.RoomID).First(&room).RecordNotFound() {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
 		return serializer.ParamErr("房间号不存在", nil)
 	}
 	// 更新当前温度
 	if err := model.DB.Model(&room).Update("current_temp", service.CurrentTemp).Error; err != nil {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
 		return serializer.DBErr("房间当前温度失败", err)
 	}
 	room.CurrentTemp = service.CurrentTemp
-	centerStatusLock.Lock()
-	windSupplyLock.Lock()
+
 	if !centerPowerOn {
 		if room.WindSupply {
 			stopWindSupply(&room)

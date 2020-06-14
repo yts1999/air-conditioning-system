@@ -13,14 +13,16 @@ type RoomWindSpeedUpdateService struct {
 
 // Update 更改风速函数
 func (service *RoomWindSpeedUpdateService) Update() serializer.Response {
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	//检查房间号是否已经存在
 	var room model.Room
 	if model.DB.Where("room_id = ?", service.RoomID).First(&room).RecordNotFound() {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
 		return serializer.ParamErr("房间号不存在", nil)
 	}
 
-	centerStatusLock.Lock()
-	windSupplyLock.Lock()
 	// 当前正在送风，则结束本次送风请求，重新开始送风
 	if room.WindSupply {
 		resp := stopWindSupply(&room)

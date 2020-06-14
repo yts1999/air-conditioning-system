@@ -13,12 +13,15 @@ type RoomShowService struct {
 
 // Show 获取房间信息函数
 func (service *RoomShowService) Show() serializer.Response {
-	var room model.Room
-	if err := model.DB.First(&room, service.RoomID).Error; err != nil {
-		return serializer.ParamErr("房间信息不存在", err)
-	}
 	centerStatusLock.Lock()
 	windSupplyLock.Lock()
+	var room model.Room
+	if err := model.DB.First(&room, service.RoomID).Error; err != nil {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
+		return serializer.ParamErr("房间信息不存在", err)
+	}
+
 	if room.WindSupply {
 		var record model.Record
 		if err := model.DB.First(&record, room.CurrentRecord).Error; err != nil {

@@ -12,14 +12,16 @@ type GuestDeleteService struct {
 
 // Delete 删除房客函数
 func (service *GuestDeleteService) Delete() serializer.Response {
+	centerStatusLock.Lock()
+	windSupplyLock.Lock()
 	//检查房间是否存在
 	var room model.Room
 	if !model.DB.Where("room_id = ?", service.RoomID).First(&room).RecordNotFound() {
+		windSupplyLock.Unlock()
+		centerStatusLock.Unlock()
 		return serializer.ParamErr("房间不存在", nil)
 	}
 
-	centerStatusLock.Lock()
-	windSupplyLock.Lock()
 	//停止送风
 	if room.WindSupply {
 		for i := 0; i < len(activeList); i++ {
