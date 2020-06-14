@@ -11,12 +11,14 @@ type RoomListService struct {
 
 // List 获取所有房间信息函数
 func (service *RoomListService) List() serializer.Response {
-	rooms := []model.Room{}
-	if err := model.DB.Find(&rooms).Error; err != nil {
-		return serializer.DBErr("获取所有房间信息失败", err)
-	}
 	centerStatusLock.RLock()
 	windSupplyLock.RLock()
+	rooms := []model.Room{}
+	if err := model.DB.Find(&rooms).Error; err != nil {
+		windSupplyLock.RUnlock()
+		centerStatusLock.RUnlock()
+		return serializer.DBErr("获取所有房间信息失败", err)
+	}
 	for i := 0; i < len(rooms); i++ {
 		if rooms[i].WindSupply {
 			var record model.Record
